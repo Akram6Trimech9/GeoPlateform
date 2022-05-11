@@ -21,7 +21,42 @@ exports.getAllFacteur=function(req,res){
      res.send(err)
  })
 } 
+exports.getfacteurbyid=(req,res)=>{
+    facteurModel.findById(req.params.id)
+    .populate('tournee')
+    .then(resultat=>{
+        if(resultat){
+            res.status(201).json(resultat)
+        }else{
+            res.status(401).json({message:'there is an error '})
+        }
+    }
+ 
+    )
+    .catch(err=>{
+        res.send(err)
+    })
+}
+exports.update=(req,res)=>{
+         facteurModel.findByIdAndUpdate(req.params.id,  {
+        matricule:req.body.matricule, 
+         nom: req.body.nom,
+        prenom: req.body.prenom,
+        email: req.body.email,
+        CentreDistribution: req.body.centre
+   })
+   .then(resultat=>{
+       if(resultat){
+           res.status(201).json(resultat)
+       }else{
+           res.status(401).json({message:'there is an error'})
+       }
+   })
+   .catch(err=>{
+       res.send(err)
+   })
 
+}
   exports.signup =function (req,res){
   CentreModel.findById(req.params.id)
    .exec()
@@ -75,19 +110,20 @@ exports.getAllFacteur=function(req,res){
    }
 
 exports.loginFacteur=function(req,res){
-     facteurModel.find({email:req.body.email})
+     facteurModel.findOne({email:req.body.email})
      .exec()
-     .then(Facteur=>{
-          if(Facteur){
-            bcrypt.compare(req.body.password, Facteur.password,  (err, same) => {
-          
-                if (err) {
-                    return new Error("comparing failed");
+     .then(facteur=>{
+          if(facteur){
+            bcrypt.compare(req.body.password,facteur.password,(err, same) => {
+           if (err) {
+            console.log("hello")
+
+                   return new Error("comparing failed");
                 }
                 if (same) {
-                
-                    const token = jwt.sign({Facteur_id:Facteur._id}, "Secret", { expiresIn: 60 * 60 * 60 })
-                    return res.status(200).json({ message: 'login successfully', token });
+                    const id=facteur._id
+                    const token = jwt.sign({facteur_id:facteur._id}, "Secret", { expiresIn: 60 * 60 * 60 })
+                    return res.status(200).json({ message: 'login successfully', token,id });
                 } 
                 else
                 {

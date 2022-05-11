@@ -1,22 +1,22 @@
 const AdressModel = require("../models/adresses");
 const mongoose = require("mongoose");
-const ActivityModel=require("../models/activities")
+ const tourneeModel=require("../models/tournee")
 exports.CreateAdresse = function(req, res) {
- ActivityModel.findById(req.params.id)
-   .then(activity=>{
-       if(activity){
+    tourneeModel.findById(req.params.id)
+   .then(tourne=>{
+       if(tourne){
         const Adresse = new AdressModel({        
             _id: mongoose.Types.ObjectId(),    
             title:req.body.title,
             location:req.body.location , 
             building:req.body.building,
-            activity:req.params.id
-        });      
+            tournee:req.params.id
+         });      
         Adresse.save()    
            .then( async result => {
                     if (result) {
-                       const activity=await ActivityModel.findByIdAndUpdate(req.params.id,{$push:{adresses:result}})
-                        return res.status(201).json({message: 'Adresse created successfully', result});
+                         const tournee =await tourneeModel.findByIdAndUpdate(req.params.id,{$push:{adresses:result}})
+                       return res.status(201).json({message: 'Adresse created successfully', result});
                     } else {
                         return res.status(401).json({message: 'Adresse failed'});
                     }
@@ -46,6 +46,7 @@ exports.getadressByActivity=function(req ,res){
 }
 exports.GetAdresse = function(req, res) {
     AdressModel.find()
+    .populate("tournee")
        .populate("activity")
          .then(result => {
             if (result) {

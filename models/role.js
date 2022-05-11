@@ -4,7 +4,7 @@ const rolemodel = new mongoose.Schema({
     type: { type: String, required: true },    
     role: {
         type: String,
-        enum: ['admin','client','facteur','chef']
+        enum: ['admin','client','chef']
     },
     user:{type:mongoose.Schema.Types.ObjectId,ref:'user'}
 }, {

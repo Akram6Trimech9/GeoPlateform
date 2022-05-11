@@ -21,8 +21,10 @@ const CentreDRoute=require('./routes/CentreDistributionRoute');
 const FacteurRoute=require('./routes/FacteurRoute'); 
 const AdressRoute=require('./routes/AdresseRoute');
 const centreGeoRoute=require('./routes/CentreGeoRoute')
-const chefRoute=require('./routes/ChefRoute')
+const chefRoute=require('./routes/ChefRoute') ;
+const PanierRoute=require('./routes/PanierRoute');
 app.use('/uploads',Express.static('uploads'));
+app.use('/panier',PanierRoute);
 app.use("/centreGeo",centreGeoRoute)
 app.use("/adress",AdressRoute);
 app.use("/client",CLientRoute);

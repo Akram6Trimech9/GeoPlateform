@@ -87,7 +87,6 @@ exports.login = function (req,res){
 }
 
 exports.signup =function (req,res){
-    console.log("hey")
     userModel.findOne({ email: req.body.email })
     .exec()
     .then(admin => {
@@ -99,7 +98,6 @@ exports.signup =function (req,res){
                     return new Error("crypting error");
                 }
                 if (encrypted) {
-
                     const role = new RoleModel({
                         _id:new mongoose.Types.ObjectId(),
                         type:"admin",

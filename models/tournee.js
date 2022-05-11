@@ -7,11 +7,11 @@ const tourneeModel = new mongoose.Schema({
     typeVoi: { 
       codetype: String,
       npmtype: String
-  },  
+  },
     nomvoi: String  ,
-    activity:[{type:mongoose.Schema.Types.ObjectId,ref:'activities'}],
+    adresses:[{type:mongoose.Schema.Types.ObjectId,ref:'adresses'}],
     facteur:{type:mongoose.Schema.Types.ObjectId,ref:'facteur'}
   }, {
     versionKey: false
 });
-module.exports = mongoose.model('tournee', tourneeModel);
+module.exports = mongoose.model('tournee', tourneeModel); // emchy aamlli tableau fel database b'esm tournee w khoudhou mel tourneeModel 

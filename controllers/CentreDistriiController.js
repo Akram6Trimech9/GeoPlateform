@@ -48,9 +48,9 @@ exports.getCentreDis = function(req, res) {
 }
 exports.getcnetreByid=function(req,res){
     centreModel.findById(req.params.id)
+    .exec()
     .then(resultat=>{
          if(resultat){
-    
             return res.status(201).json(resultat)
         }else{
             res.status(401).json({message:"there is an error"})

@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const Facteur = require("../models/Facteur");
 exports.getalltourne=function(req,res){
     tourneeModel.find()
-    .populate("facteur").populate("activity")
+    .populate("facteur").populate("adresses")
      .then(resultat=>{
     if(resultat) {
         return   res.status(201).json(resultat)
@@ -128,4 +128,17 @@ exports.getTourneeByid = function(req, res) {
             }
         })
         .catch(err => { return res.status(500).json(err) });
+}
+exports.gettourneebyfacteur=function(req,res){
+    tourneeModel.findOne({facteur:req.params.id})
+     .exec()
+     .then(resultat=>{
+         if(resultat){
+             res.status(201).json(resultat)
+         }else{
+             res.status(401).json({message:'error'})
+         }
+     }).catch(err=>{
+         res.send(err)
+     })
 }

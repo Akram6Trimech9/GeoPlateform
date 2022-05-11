@@ -1,30 +1,44 @@
 const mongoose = require("mongoose");
 const ActivityModel = require("../models/activities");
-const tourneeModel=require("../models/tournee");
-const  addresseModel = require("../models/adresses")
-
+const adresses = require("../models/adresses");
+ const  addresseModel = require("../models/adresses");
  exports.CreateActivity = function(req, res) {
-           const  activity=new ActivityModel({
+     addresseModel.findById(req.params.id)
+       .then(adress=>{
+           if(adress){
+               let adr=[]; 
+                adr.push(req.params.id)
+              const  activity=new ActivityModel({
                 _id: mongoose.Types.ObjectId(),
                 title:req.body.title , 
                 image:req.file.path,
+                adresses:adr
            }) 
            activity.save()
-           .then(  resultat=>{
-            if(resultat){
-                resultat.image = resultat.image.split('\\')[1];
-                return   res.status(201).json({message:"Activity Created",resultat})
 
-            }else{
-                res.status(400).json({message:"activity not created"})
-            }
-           })
-           .catch(err=>{
-           return res.send(err)
+           .then(async resultat=>{
+                  if(resultat){
+                    console.log("resultat",resultat)
+
+                  const  adress = await  addresseModel.findByIdAndUpdate(req.params.id,{activity:resultat})
+                  console.log("hello",adress)
+
+                  res.status(201).json(adress) 
+                }else{
+                    res.status(401).json({message:"error with activity"})
+                }})
+            .catch(err=>{
+                req.send(err)
+            })
+        
+           }else{
+               res.status(404).json({message:"there is no adress"})
+           }
+          
         })
-                  
-         
-    
+        .catch(err=>{
+            res.send(err)
+        })       
     }
 exports.GetActivity = function(req, res) {
     ActivityModel.find()
