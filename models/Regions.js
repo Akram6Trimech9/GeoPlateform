@@ -7,7 +7,8 @@ const RegionModel = new mongoose.Schema({
            latitude: Number
        },
      Centres:[{type:mongoose.Schema.Types.ObjectId,ref:'CentreDis'}],
-     CentreGeo:[{type:mongoose.Schema.Types.ObjectId,ref:'centreGeo'}]
+     centregeo:[{type:mongoose.Schema.Types.ObjectId,ref:'centreGeo'}],
+     address:[{type:mongoose.Schema.Types.ObjectId,ref:'adresses'}]
  } 
  , {
     versionKey: false});

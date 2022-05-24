@@ -1,35 +1,78 @@
 const centreGeoModel = require("../models/CentreGeomarketing");
 const mongoose = require("mongoose");
 const RegionModel=require("../models/Regions")
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 exports.Createcentregeo= function(req, res) {
-    const  centre = new centreGeoModel({
-        _id: mongoose.Types.ObjectId(),  
-        nom: req.body.nom,
-        tel: req.body.tel,
-        fax: req.body.fax  ,
-        location:req.body.location,
-        Region: req.params.idregion ,
-    });      
-      centre.save()
-      
-       .then( async  centre => {
-                if (centre) {
-                     const Region = await RegionModel.findByIdAndUpdate(req.params.idregion,{$push:{CentreGeo:centre}});        
-                     console.log(Region)
-                     if(Region){
-                            return res.status(201).json({message: 'centre created successfully', centre});
-                         } else { 
-                            return res.status(401).json({message:'centre failed'});
+   RegionModel.findById(req.params.idregion)
+    .then(region=>{ 
+         if(region){
+                   bcrypt.hash(req.body.password, 10, (err, encrypted) => {
+                      if (err) {
+                            return new Error("crypting error");
+                        }
+                     if (encrypted) {        
+                          const  centre = new centreGeoModel({
+                               _id: mongoose.Types.ObjectId(),  
+                               nom: req.body.nom,
+                               password:encrypted,
+                               email:req.body.email,
+                              tel: req.body.tel,
+                               fax: req.body.fax  ,
+                              location:req.body.location,
+                              Region:req.params.idregion ,
+                            });      
+                            centre.save()
+                           .then( async  centre => {
+                               if (centre) {
+                                const Region = await RegionModel.findByIdAndUpdate(req.params.idregion,{$push:{centregeo:centre}});        
+                               console.log(Region)
+                                   if(Region){
+                                  return res.status(201).json({message: 'centre created successfully', centre});
+                                    } else { 
+                                 return res.status(401).json({message:'centre failed'});
 
-                         }               
-                } else {
-                    return res.status(401).json({message: 'cebtre failed'});
+                                  }               
+                               } else {
+                              return res.status(401).json({message: 'cebtre failed'});
+                           }
+                            })
+                          .catch(err => {
+                          return res.status(401).json(err);
+                               })
+                            }})}})}
+
+
+exports.loginCentreGeo=function(req,res){
+     centreGeoModel.findOne({email:req.body.email})
+     .exec()
+     .then(centre=>{
+          if(centre){
+            bcrypt.compare(req.body.password,centre.password,(err, same) => {
+           if (err) {
+            console.log("hello")
+
+                   return new Error("comparing failed");
                 }
-            })
-            .catch(err => {
-                return res.status(401).json(err);
-            })
+                if (same) {
+                    const token = jwt.sign({centre_id:centre._id}, "Secret", { expiresIn: 60 * 60 * 60 })
+                    return res.status(200).json({ message: 'login successfully', token });
+                } 
+                else
+                {
+                    return res.status(401).json({ message: 'mot de passe incorrect' });
+                }
+              })
+          }           else {
+            return res.send("email incorrect")
+        } 
+    })
+    .catch(err => {
+        return res.staus(500).json(err);
+    });
+
 }
+                         
 exports.getCentreGeo = function(req, res) {
     centreGeoModel.find()  
   .populate("Region")

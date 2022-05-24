@@ -6,7 +6,7 @@ exports.postpanier=(req,res)=>{
    const panier = new PanierModel({
     _id: mongoose.Types.ObjectId(),  
     region: req.body.region, 
-    Centre:  req.body.Centre,
+    address:  req.body.address,
     Activity:  req.body.Activity, 
     nom: req.body.nom, 
     prenom:  req.body.prenom , 
@@ -26,7 +26,7 @@ exports.postpanier=(req,res)=>{
 }
 exports.getall=(req,res)=>{
     PanierModel.find()
-    .populate("region").populate("Centre").populate("Activity")
+    .populate("region").populate("address").populate("Activity")
     .then(resultat=>{
         if(resultat){
             res.status(201).json(resultat)

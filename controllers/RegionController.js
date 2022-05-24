@@ -1,4 +1,3 @@
-const req = require('express/lib/request')
 const mongoose=require('mongoose')
 const RegionModel=require('../models/Regions')
 
@@ -19,9 +18,9 @@ exports.postRegion=function(req,res){
 }
 
 exports.getregions = function(req, res) {
-    RegionModel.find()  
-     .populate('Centres')
-         .exec()
+    RegionModel.find().populate('address')  
+          .exec()
+          
         .then(result => {
             if (result.length > 0) {
                 return res.send(result);
