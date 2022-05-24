@@ -7,7 +7,6 @@ exports.getalltourne=function(req,res){
      .then(resultat=>{
     if(resultat) {
         return   res.status(201).json(resultat)
-     
         }else{
             return  res.status(401).json('there is an error there')
         }

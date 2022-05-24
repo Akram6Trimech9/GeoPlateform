@@ -3,7 +3,6 @@ const userModel = require("../models/user");
 const RoleModel = require("../models/role");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 exports.getChefs=function(req,res){
     let  Chef=[];
     RoleModel.find({type:"chef"}).exec()

@@ -6,4 +6,5 @@ route.delete("/:id",centregeoController.DeleteCentregeo)
 route.get('/:id',centregeoController.getcentregeoByregion)
 route.get('/getcentre/:id',centregeoController.getcnetregeoByid)
 route.patch('/:id',centregeoController.updateCentregeo)
+route.post('/',centregeoController.loginCentreGeo)
 module.exports=route;   

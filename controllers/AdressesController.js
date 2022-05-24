@@ -1,22 +1,34 @@
 const AdressModel = require("../models/adresses");
 const mongoose = require("mongoose");
- const tourneeModel=require("../models/tournee")
+ const tourneeModel=require("../models/tournee") 
+ const RegionModel=require("../models/Regions")
 exports.CreateAdresse = function(req, res) {
-    tourneeModel.findById(req.params.id)
+     tourneeModel.findById(req.params.id)
    .then(tourne=>{
        if(tourne){
+        // bcrypt.hash(req.body.password, 10, (err, encrypted) => {
+        //     if (err) {
+        //         return new Error("crypting error");
+        //     }
+        //     if (encrypted) {        
+        //         const Facteur = new facteurModel({
         const Adresse = new AdressModel({        
             _id: mongoose.Types.ObjectId(),    
             title:req.body.title,
             location:req.body.location , 
             building:req.body.building,
-            tournee:req.params.id
+            tournee:req.params.id ,
+            region:req.params.idregion 
          });      
         Adresse.save()    
            .then( async result => {
                     if (result) {
+
                          const tournee =await tourneeModel.findByIdAndUpdate(req.params.id,{$push:{adresses:result}})
-                       return res.status(201).json({message: 'Adresse created successfully', result});
+                         const Region=await RegionModel.findByIdAndUpdate(req.params.idregion,{$push:{address:result}})
+ 
+                        return res.status(201).json(result);
+                  
                     } else {
                         return res.status(401).json({message: 'Adresse failed'});
                     }
@@ -115,4 +127,14 @@ exports.GetAdressById = function(req, res) {
             }
         })
         .catch(err => { return res.status(500).json(err) });
+}
+exports.getAdressByregion= async (req,res)=>{
+ try{
+   const address= await AdressModel.find({region:req.params.id})
+   address && address && res.status(201).json(address) ; 
+   !address && res.status(404).json("adress not found")
+} 
+    catch(err){
+        return  res.status(500).json(err)
+    }
 }
